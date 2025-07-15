@@ -1,9 +1,9 @@
-# 🚀 Bah.Ai Test Automation Suite
+# 🚀 Property Listing Test Automation Suite
 
-![Test Status](https://github.com/rlongcop-agsx/bah.ai-automation/workflows/Robot%20Framework%20Tests/badge.svg)
-[![GitHub Pages](https://img.shields.io/badge/docs-gh--pages-blue)](https://rlongcop-agsx.github.io/bah.ai-automation/)
+![Test Status](https://github.com/rlongcop-agsx/property-listing-web-automation/workflows/Robot%20Framework%20Tests/badge.svg)
+[![GitHub Pages](https://img.shields.io/badge/docs-gh--pages-blue)](https://rlongcop-agsx.github.io/property-listing-web-automation/)
 
-This automation framework provides comprehensive cross-browser testing for the Bah.Ai project using Robot Framework.
+This automation framework provides comprehensive cross-browser testing for the Property Listing project using Robot Framework.
 
 ## 🌟 Key Features
 - **Multi-browser testing** (Chrome, Firefox, Safari)
@@ -14,13 +14,13 @@ This automation framework provides comprehensive cross-browser testing for the B
 
 ## 📊 Test Reports Dashboard
 
-🔗 [Live Test Dashboard](https://rlongcop-agsx.github.io/bah.ai-automation/)
+🔗 [Live Test Dashboard](https://rlongcop-agsx.github.io/property-listing-web-automation/)
 
 | Browser | Report | Logs |
 |---------|--------|------|
-| Chrome | [Report](https://rlongcop-agsx.github.io/bah.ai-automation/browser-reports/chrome/report.html) | [Logs](https://rlongcop-agsx.github.io/bah.ai-automation/browser-reports/chrome/log.html) |
-| Firefox | [Report](https://rlongcop-agsx.github.io/bah.ai-automation/browser-reports/firefox/report.html) | [Logs](https://rlongcop-agsx.github.io/bah.ai-automation/browser-reports/firefox/log.html) |
-| Safari | [Report](https://rlongcop-agsx.github.io/bah.ai-automation/browser-reports/safari/report.html) | [Logs](https://rlongcop-agsx.github.io/bah.ai-automation/browser-reports/safari/log.html) |
+| Chrome | [Report](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/chrome/report.html) | [Logs](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/chrome/log.html) |
+| Firefox | [Report](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/firefox/report.html) | [Logs](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/firefox/log.html) |
+| Safari | [Report](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/safari/report.html) | [Logs](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/safari/log.html) |
 
 ## 🛠️ Technical Stack
 - **Test Framework**: Robot Framework
