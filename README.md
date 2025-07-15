@@ -1,6 +1,6 @@
 # 🚀 Property Listing Test Automation Suite
 
-![Test Status](https://github.com/rlongcop-agsx/property-listing-web-automation/workflows/Robot%20Framework%20Tests/badge.svg)
+[![Test Status](https://github.com/rlongcop-agsx/property-listing-web-automation/workflows/Robot%20Framework%20Tests/badge.svg)
 [![GitHub Pages](https://img.shields.io/badge/docs-gh--pages-blue)](https://rlongcop-agsx.github.io/property-listing-web-automation/)
 
 This automation framework provides comprehensive cross-browser testing for the Property Listing project using Robot Framework.
