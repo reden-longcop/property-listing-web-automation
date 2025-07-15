@@ -1,7 +1,7 @@
 # 🚀 Property Listing Test Automation Suite
 
-[![Test Status](https://github.com/rlongcop-agsx/property-listing-web-automation/workflows/Robot%20Framework%20Tests/badge.svg)
-[![GitHub Pages](https://img.shields.io/badge/docs-gh--pages-blue)](https://rlongcop-agsx.github.io/property-listing-web-automation/)
+![Test Status](https://github.com/reden-longcop/property-listing-web-automation/workflows/Robot%20Framework%20Tests/badge.svg)
+[![GitHub Pages](https://img.shields.io/badge/docs-gh--pages-blue)](https://reden-longcop.github.io/property-listing-web-automation/)
 
 This automation framework provides comprehensive cross-browser testing for the Property Listing project using Robot Framework.
 
@@ -14,13 +14,13 @@ This automation framework provides comprehensive cross-browser testing for the P
 
 ## 📊 Test Reports Dashboard
 
-🔗 [Live Test Dashboard](https://rlongcop-agsx.github.io/property-listing-web-automation/)
+🔗 [Live Test Dashboard](https://reden-longcop.github.io/property-listing-web-automation/)
 
 | Browser | Report | Logs |
 |---------|--------|------|
-| Chrome | [Report](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/chrome/report.html) | [Logs](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/chrome/log.html) |
-| Firefox | [Report](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/firefox/report.html) | [Logs](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/firefox/log.html) |
-| Safari | [Report](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/safari/report.html) | [Logs](https://rlongcop-agsx.github.io/property-listing-web-automation/browser-reports/safari/log.html) |
+| Chrome | [Report](https://reden-longcop.github.io/property-listing-web-automation/browser-reports/chrome/report.html) | [Logs](https://reden-longcop.github.io/property-listing-web-automation/browser-reports/chrome/log.html) |
+| Firefox | [Report](https://reden-longcop.github.io/property-listing-web-automation/browser-reports/firefox/report.html) | [Logs](https://reden-longcop.github.io/property-listing-web-automation/browser-reports/firefox/log.html) |
+| Safari | [Report](https://reden-longcop.github.io/property-listing-web-automation/browser-reports/safari/report.html) | [Logs](https://reden-longcop.github.io/property-listing-web-automation/browser-reports/safari/log.html) |
 
 ## 🛠️ Technical Stack
 - **Test Framework**: Robot Framework
