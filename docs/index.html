@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bah.Ai | Test Status Report</title>
+  <link href="https://cdn.prod.website-files.com/673c09c7d8c52092e8582fc8/67e2037a5e93469061df790b_favicon.png" rel="shortcut icon" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-hover: #0d5bba;
+      --background: #121212;
+      --surface: #1e1e1e;
+      --border: #444;
+      --text-primary: #e0e0e0;
+      --text-secondary: #aaa;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --error: #f44336;
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background-color: var(--background);
+      color: var(--text-primary);
+      padding: 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .dashboard {
+        grid-template-columns: 300px 1fr;
+      }
+    }
+
+    .control-panel {
+      background-color: var(--surface);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .report-container {
+      background-color: var(--surface);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .selector {
+      margin-bottom: 1.5rem;
+    }
+
+    .selector label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    select {
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background-color: var(--surface);
+      color: var(--text-primary);
+      padding: 10px 36px 10px 12px;
+      width: 100%;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23e0e0e0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      transition: var(--transition);
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+    }
+
+    .stats {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-weight: 600;
+    }
+
+    .report-actions {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      padding: 10px 16px;
+      border-radius: 6px;
+      transition: var(--transition);
+      text-align: center;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background-color: rgba(26, 115, 232, 0.1);
+    }
+
+    iframe {
+      width: 100%;
+      height: 700px;
+      border: none;
+      background-color: var(--surface);
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .status-success {
+      background-color: var(--success);
+    }
+
+    .status-warning {
+      background-color: var(--warning);
+    }
+
+    .status-error {
+      background-color: var(--error);
+    }
+
+    .last-run {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100px;
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media screen and (max-width: 768px) {
+      iframe {
+        height: 500px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><i class="fas fa-chart-line"></i> BAH.AI TEST DASHBOARD</h1>
+    <p class="subtitle">Click on "Logs" in the upper left of the test report to see detailed test execution information.</p>
+  </header>
+
+  <div class="dashboard">
+    <div class="control-panel">
+      <div class="selector">
+        <label for="browser-select"><i class="fas fa-globe"></i> Browser</label>
+        <select id="browser-select" class="choices-select">
+          <option value="chrome">Chrome</option>
+          <option value="firefox">Firefox</option>
+          <option value="safari">Safari</option>
+        </select>
+      </div>
+
+      <div class="stats" id="test-stats">
+        <!-- This will be populated dynamically -->
+        <div class="loading">
+          <div class="spinner"></div>
+          <span>Loading test results...</span>
+        </div>
+      </div>
+
+      <div class="report-actions">
+        <a href="#" target="_blank" class="btn btn-primary" id="report-link">
+          <i class="fas fa-external-link-alt"></i> Open Full Report
+        </a>
+      </div>
+    </div>
+
+    <div class="report-container">
+      <div class="status-bar">
+        <div class="status-indicator" id="status-indicator">
+          <div class="status-dot"></div>
+          <span>Test Suite: <strong id="test-suite">Regression</strong></span>
+        </div>
+        <div class="last-run">
+          Last run: <strong id="last-run-time">Loading...</strong>
+        </div>
+      </div>
+      
+      <iframe id="report-frame" src="about:blank"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // DOM elements
+    const browserSelect = document.getElementById('browser-select');
+    const reportFrame = document.getElementById('report-frame');
+    const reportLink = document.getElementById('report-link');
+    const testStats = document.getElementById('test-stats');
+    const statusIndicator = document.getElementById('status-indicator');
+    const statusDot = statusIndicator.querySelector('.status-dot');
+    const lastRunTime = document.getElementById('last-run-time');
+
+    // Load test results
+    async function loadTestResults() {
+      try {
+        const response = await fetch('metrics.json');
+        if (!response.ok) throw new Error('Failed to load metrics');
+        
+        const data = await response.json();
+        updateDashboard(data);
+      } catch (error) {
+        console.error('Error loading test results:', error);
+        testStats.innerHTML = `
+          <div class="stat-item">
+            <span style="color: var(--error)">Error loading test results</span>
+          </div>
+        `;
+      }
+    }
+
+    // Update dashboard with live data
+    function updateDashboard(data) {
+      // Update last run time
+      lastRunTime.textContent = new Date(data.last_updated).toLocaleString();
+      
+      // Create stats HTML
+      let statsHTML = '';
+      let totalPassed = 0;
+      let totalFailed = 0;
+      
+      // Create browser-specific stats
+      for (const [browser, stats] of Object.entries(data.browsers)) {
+        statsHTML += `
+          <div class="stat-item">
+            <span><i class="fab fa-${browser}"></i> ${browser.charAt(0).toUpperCase() + browser.slice(1)}:</span>
+            <span class="stat-value" style="color: ${stats.failed > 0 ? 'var(--error)' : 'var(--success)'}">
+              ${stats.pass_rate.toFixed(1)}%
+            </span>
+          </div>
+        `;
+        totalPassed += stats.passed;
+        totalFailed += stats.failed;
+      }
+      
+      // Add totals
+      const totalTests = totalPassed + totalFailed;
+      const overallPassRate = totalTests > 0 ? (totalPassed / totalTests * 100) : 0;
+      
+      statsHTML += `
+        <div class="stat-item">
+          <span><i class="fas fa-check-circle"></i> Total Passed:</span>
+          <span class="stat-value" style="color: var(--success)">${totalPassed}</span>
+        </div>
+        <div class="stat-item">
+          <span><i class="fas fa-exclamation-triangle"></i> Total Failed:</span>
+          <span class="stat-value" style="color: ${totalFailed > 0 ? 'var(--error)' : 'var(--success)'}">${totalFailed}</span>
+        </div>
+        <div class="stat-item">
+          <span><i class="fas fa-percentage"></i> Overall Pass Rate:</span>
+          <span class="stat-value" style="color: ${overallPassRate < 90 ? 'var(--warning)' : 'var(--success)'}">
+            ${overallPassRate.toFixed(1)}%
+          </span>
+        </div>
+      `;
+      
+      testStats.innerHTML = statsHTML;
+      
+      // Update status indicator
+      if (totalFailed > 5) {
+        statusDot.className = 'status-dot status-error';
+      } else if (totalFailed > 0) {
+        statusDot.className = 'status-dot status-warning';
+      } else {
+        statusDot.className = 'status-dot status-success';
+      }
+      
+      // Set default browser report
+      updateBrowserReport('chrome', data);
+    }
+
+    // Update browser report display
+    function updateBrowserReport(browser, data) {
+      const reportUrl = `./browser-reports/${browser}/report.html`;
+      
+      reportFrame.style.opacity = 0;
+      reportFrame.src = reportUrl;
+      reportLink.href = reportUrl;
+      reportLink.innerHTML = `
+        <i class="fas fa-external-link-alt"></i> 
+        ${browser.charAt(0).toUpperCase() + browser.slice(1)} Report
+        (${data.browsers[browser].pass_rate.toFixed(1)}%)
+      `;
+      
+      reportFrame.onload = () => {
+        reportFrame.style.opacity = 1;
+      };
+    }
+
+    // Event listeners
+    browserSelect.addEventListener('change', function() {
+      fetch('metrics.json')
+        .then(response => response.json())
+        .then(data => updateBrowserReport(this.value, data));
+    });
+
+    // Initialize
+    reportFrame.style.opacity = 0;
+    loadTestResults();
+
+    // Auto-refresh every 5 minutes
+    setInterval(loadTestResults, 300000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+name: Robot Framework Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  install_dependencies:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies from requirements.txt
+      run: pip install -r requirements.txt
+
+    - name: Upload installed environment
+      uses: actions/upload-artifact@v4
+      with:
+        name: python-env
+        path: .
+
+  run_chrome_tests:
+    needs: install_dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies from requirements.txt
+      run: pip install -r requirements.txt
+
+    - name: Decode Gmail credentials from secrets
+      run: |
+        echo "${{ secrets.GMAIL_CREDENTIALS_B64 }}" | base64 -d > helpers/credentials.json
+        echo "${{ secrets.GMAIL_TOKEN_B64 }}" | base64 -d > helpers/token.pickle
+
+    - name: Run headless Chrome tests
+      run: |
+        robot -d logs/chrome \
+          -v BASE_URL:${{ secrets.PUBLIC_BASE_URL_STG }} \
+          -v BROWSER:headlesschrome \
+          --name "Chrome Tests" \
+          tests
+
+      continue-on-error: true
+
+    - name: Upload Chrome logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: chrome
+        path: logs/chrome/
+  
+  run_firefox_tests:
+    needs: install_dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies from requirements.txt
+      run: pip install -r requirements.txt
+
+    - name: Decode Gmail credentials from secrets
+      run: |
+        echo "${{ secrets.GMAIL_CREDENTIALS_B64 }}" | base64 -d > helpers/credentials.json
+        echo "${{ secrets.GMAIL_TOKEN_B64 }}" | base64 -d > helpers/token.pickle
+
+    - name: Run headless Firefox tests
+      run: |
+        robot -d logs/firefox \
+          -v BASE_URL:${{ secrets.PUBLIC_BASE_URL_STG }} \
+          -v BROWSER:headlessfirefox \
+          --name "Firefox Tests" \
+          tests
+
+      continue-on-error: true
+
+    - name: Upload Firefox logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: firefox
+        path: logs/firefox/
+
+  run_safari_tests:
+    needs: install_dependencies
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Enable safaridriver
+      run: sudo safaridriver --enable
+
+    - name: Install dependencies from requirements.txt
+      run: pip install -r requirements.txt
+
+    - name: Decode Gmail credentials from secrets
+      run: |
+        echo "${{ secrets.GMAIL_CREDENTIALS_B64 }}" | base64 -d > helpers/credentials.json
+        echo "${{ secrets.GMAIL_TOKEN_B64 }}" | base64 -d > helpers/token.pickle
+
+    - name: Run Safari tests
+      run: |
+        robot -d logs/safari \
+          -v BASE_URL:${{ secrets.PUBLIC_BASE_URL_STG }} \
+          -v BROWSER:safari \
+          --name "Safari Tests" \
+          tests
+
+      continue-on-error: true
+
+    - name: Upload Safari logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: safari
+        path: logs/safari/
+
+  merge_reports:
+    needs: [run_chrome_tests, run_firefox_tests, run_safari_tests]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      # Install required tools
+      - name: Install dependencies
+        run: |
+          pip install robotframework
+          sudo apt-get install -y jq
+
+      # Download all browser results
+      - name: Download Chrome results
+        uses: actions/download-artifact@v4
+        with:
+          name: chrome
+          path: logs/chrome/
+      - name: Download Firefox results
+        uses: actions/download-artifact@v4
+        with:
+          name: firefox
+          path: logs/firefox/
+      - name: Download Safari results
+        uses: actions/download-artifact@v4
+        with:
+          name: safari
+          path: logs/safari/
+
+      # Create directory structure
+      - name: Create output folders
+        run: |
+          mkdir -p results/browser-reports/chrome
+          mkdir -p results/browser-reports/firefox
+          mkdir -p results/browser-reports/safari
+
+      # Generate combined metrics
+      - name: Generate combined metrics
+        run: |
+          python -c "
+          from robot.api import ExecutionResult
+          import json
+          
+          metrics = {
+              'browsers': {},
+              'last_updated': '$(date -u +'%Y-%m-%dT%H:%M:%SZ')'
+          }
+          
+          for browser in ['chrome', 'firefox', 'safari']:
+              try:
+                  result = ExecutionResult(f'logs/{browser}/output.xml')
+                  stats = result.statistics.total
+                  metrics['browsers'][browser] = {
+                      'passed': stats.passed,
+                      'failed': stats.failed,
+                      'pass_rate': (stats.passed / stats.total) * 100 if stats.total > 0 else 0,
+                      'total': stats.total
+                  }
+              except Exception as e:
+                  print(f'Error processing {browser}: {str(e)}')
+                  metrics['browsers'][browser] = {
+                      'passed': 0,
+                      'failed': 0,
+                      'pass_rate': 0,
+                      'total': 0
+                  }
+          
+          with open('results/metrics.json', 'w') as f:
+              json.dump(metrics, f, indent=2)
+          "
+
+      # Copy reports and dashboard
+      - name: Prepare dashboard
+        run: |
+          # Copy your existing index.html
+          cp docs/index.html results/
+
+          # Chrome
+          mkdir -p results/browser-reports/chrome/screenshots
+          [ -f logs/chrome/report.html ] && cp logs/chrome/report.html results/browser-reports/chrome/ || echo "No Chrome report"
+          [ -f logs/chrome/log.html ] && cp logs/chrome/log.html results/browser-reports/chrome/ || echo "No Chrome log"
+          if compgen -G "logs/chrome/screenshots/*.png" > /dev/null; then
+            cp logs/chrome/screenshots/*.png results/browser-reports/chrome/screenshots/
+          else
+            echo "No Chrome screenshots"
+          fi
+
+          # Firefox
+          mkdir -p results/browser-reports/firefox/screenshots
+          [ -f logs/firefox/report.html ] && cp logs/firefox/report.html results/browser-reports/firefox/ || echo "No Firefox report"
+          [ -f logs/firefox/log.html ] && cp logs/firefox/log.html results/browser-reports/firefox/ || echo "No Firefox log"
+          if compgen -G "logs/firefox/screenshots/*.png" > /dev/null; then
+            cp logs/firefox/screenshots/*.png results/browser-reports/firefox/screenshots/
+          else
+            echo "No Firefox screenshots"
+          fi
+
+          # Safari
+          mkdir -p results/browser-reports/safari/screenshots
+          [ -f logs/safari/report.html ] && cp logs/safari/report.html results/browser-reports/safari/ || echo "No Safari report"
+          [ -f logs/safari/log.html ] && cp logs/safari/log.html results/browser-reports/safari/ || echo "No Safari log"
+          if compgen -G "logs/safari/screenshots/*.png" > /dev/null; then
+            cp logs/safari/screenshots/*.png results/browser-reports/safari/screenshots/
+          else
+            echo "No Safari screenshots"
+          fi
+
+
+      - name: Check quality gate
+        run: |
+          pass_rate=$(jq -r '[.browsers[].pass_rate] | add / length' results/metrics.json)
+          if (( $(echo "$pass_rate < 90" | bc -l) )); then
+            echo "::warning::Average pass rate below 90% ($pass_rate%)"
+          fi
+
+      - name: Upload final reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: results/
+
+      # Publish to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./results/
+          publish_branch: gh-pages
+          commit_message: "Update test dashboard"
